@@ -11,29 +11,28 @@ import (
 )
 
 type Account struct {
-	Name string
-	Path string
+	Name         string
+	Path         string
 	Transactions map[int]Transaction
 }
 
-
 func FromDirectory(path string) (*Account, error) {
-	account := Account{}	
-	// Read directory 
+	account := Account{}
+	// Read directory
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
 
-	name := filepath.Base(path)	
+	name := filepath.Base(path)
 	account.Name = name
 
 	account.Path = path
-	
+
 	account.Transactions = map[int]Transaction{}
 
 	//TODO: Refactor as go routine
-	for _, file := range files  {
+	for _, file := range files {
 		if file.IsDir() {
 			continue
 		}
@@ -55,13 +54,13 @@ func FromDirectory(path string) (*Account, error) {
 	return &account, nil
 }
 
-func (a *Account) Balance() float64 {
-	var balance float64
+func (a *Account) Balance() Amount {
+	var balance Amount
 
 	for _, transaction := range a.Transactions {
 		balance += transaction.Amount
 	}
-		
+
 	return balance
 }
 
@@ -85,35 +84,35 @@ func (a *Account) AddTransaction(transaction *Transaction) error {
 	if err != nil {
 		return err
 	}
-	
+
 	a.Transactions[transaction.ID] = *transaction
 
 	return nil
 }
 
-func (a *Account) CreateTransaction(amount float64, description string, category string) (*Transaction, error) {
+func (a *Account) CreateTransaction(amount Amount, description string, category string) (*Transaction, error) {
+	//TODO: Do we really want to generate the ids like this?
 	var maxID int = rand.Intn(1000)
 	for id := range a.Transactions {
 		if id > maxID {
 			maxID = id
 		}
 	}
-	
+
 	newID := maxID + 1
 
 	transaction := Transaction{
-		ID: newID,
-		Amount: amount,
+		ID:          newID,
+		Amount:      amount,
 		Description: description,
-		Category: category,
-		Account: a,
+		Category:    category,
+		Account:     a,
 	}
-
 
 	err := a.AddTransaction(&transaction)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &transaction, nil
 }
