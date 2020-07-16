@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 var rootCmd = &cobra.Command{
-	Use: "mago",
+	Use:   "mago",
 	Short: "mago is your git-based finance manager",
 }
 

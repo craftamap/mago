@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
 )
 
 var ErrNoTransactionID = errors.New("no ID found in Transaction")
@@ -19,11 +20,13 @@ func (a Amount) String() string {
 
 // Transaction represents an financial transaction
 type Transaction struct {
-	ID          int      `json:"id"`
-	Amount      Amount   `json:"amount,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Category    string   `json:"category,omitempty"`
-	Account     *Account `json:"-"`
+	ID               int       `json:"id"`
+	Amount           Amount    `json:"amount,omitempty"`
+	Description      string    `json:"description,omitempty"`
+	Category         string    `json:"category,omitempty"`
+	Account          *Account  `json:"-"`
+	CreationDate     time.Time `json:"creationDate"`
+	ModificationDate time.Time `json:"modificationDate"`
 }
 
 func FromReader(account *Account, reader io.Reader) (*Transaction, error) {

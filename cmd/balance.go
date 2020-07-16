@@ -13,7 +13,7 @@ func init() {
 }
 
 func runBalanceCmd(cmd *cobra.Command, args []string) {
-	rootDir, err := cmd.Flags().GetString("target")	
+	rootDir, err := cmd.Flags().GetString("target")
 	if err != nil {
 		log.Error(err)
 	}
@@ -23,7 +23,7 @@ func runBalanceCmd(cmd *cobra.Command, args []string) {
 	}
 
 	for _, account := range manager.Accounts {
-		fmt.Printf("%s: %s\n", account.Name, account.Balance())	
+		fmt.Printf("%s: %s\n", account.Name, account.Balance())
 	}
 }
 

@@ -16,9 +16,9 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 }
 
-func runAddCmd (cmd *cobra.Command, args []string) {
+func runAddCmd(cmd *cobra.Command, args []string) {
 	//TODO: Make this beautiful, lol
-	rootDir, err := cmd.Flags().GetString("target")	
+	rootDir, err := cmd.Flags().GetString("target")
 	if err != nil {
 		log.Error(err)
 	}
@@ -31,7 +31,7 @@ func runAddCmd (cmd *cobra.Command, args []string) {
 	accountMap := map[int]string{}
 	for account := range manager.Accounts {
 		fmt.Printf(" [%d] %s\n", i, account)
-		accountMap[i-1]=account
+		accountMap[i-1] = account
 		i++
 	}
 	var integer = 0
@@ -47,7 +47,7 @@ func runAddCmd (cmd *cobra.Command, args []string) {
 			log.Error(err)
 		}
 		if integer >= 1 && integer <= len(manager.Accounts) {
-			break;
+			break
 		}
 	}
 	account := manager.Accounts[accountMap[integer-1]]
@@ -69,7 +69,7 @@ func runAddCmd (cmd *cobra.Command, args []string) {
 		}
 		amount = money.Amount(amountI)
 		break
-	} 
+	}
 
 	fmt.Println("Whats the description?")
 	var description string
@@ -84,7 +84,7 @@ func runAddCmd (cmd *cobra.Command, args []string) {
 	}
 
 	account.CreateTransaction(amount, description, "")
-	
+
 }
 
 var addCmd = &cobra.Command{
