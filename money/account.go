@@ -1,15 +1,19 @@
 package money
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 type Account struct {
 	Name string
-	Transactions []Transaction
+	Path string
+	Transactions map[int]Transaction
 }
 
 
@@ -23,6 +27,10 @@ func FromDirectory(path string) (*Account, error) {
 
 	name := filepath.Base(path)	
 	account.Name = name
+
+	account.Path = path
+	
+	account.Transactions = map[int]Transaction{}
 
 	//TODO: Refactor as go routine
 	for _, file := range files  {
@@ -41,7 +49,7 @@ func FromDirectory(path string) (*Account, error) {
 			log.Print(err)
 			continue
 		}
-		account.Transactions	= append(account.Transactions, *transaction)
+		account.Transactions[transaction.ID] = *transaction
 	}
 
 	return &account, nil
@@ -55,4 +63,57 @@ func (a *Account) Balance() float64 {
 	}
 		
 	return balance
+}
+
+func (a *Account) RemoveTransaction(transaction *Transaction) error {
+	delete(a.Transactions, transaction.ID)
+
+	err := os.Remove(filepath.Join(a.Path, strconv.Itoa(transaction.ID)))
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *Account) AddTransaction(transaction *Transaction) error {
+	file, err := os.Create(filepath.Join(a.Path, strconv.Itoa(transaction.ID)))
+	if err != nil {
+		return err
+	}
+	err = json.NewEncoder(file).Encode(transaction)
+	if err != nil {
+		return err
+	}
+	
+	a.Transactions[transaction.ID] = *transaction
+
+	return nil
+}
+
+func (a *Account) CreateTransaction(amount float64, description string, category string) (*Transaction, error) {
+	var maxID int = rand.Intn(1000)
+	for id := range a.Transactions {
+		if id > maxID {
+			maxID = id
+		}
+	}
+	
+	newID := maxID + 1
+
+	transaction := Transaction{
+		ID: newID,
+		Amount: amount,
+		Description: description,
+		Category: category,
+		Account: a,
+	}
+
+
+	err := a.AddTransaction(&transaction)
+	if err != nil {
+		return nil, err
+	}
+	
+	return &transaction, nil
 }
