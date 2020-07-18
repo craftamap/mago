@@ -1,11 +1,11 @@
-package cmd
+package main
 
 import (
 	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/craftamap/mago/money"
+	money "github.com/craftamap/mago"
 	"github.com/prometheus/common/log"
 	"github.com/spf13/cobra"
 )

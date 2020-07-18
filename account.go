@@ -1,4 +1,4 @@
-package money
+package mago
 
 import (
 	"encoding/json"
@@ -26,7 +26,6 @@ func FromDirectory(path string) (*Account, error) {
 
 	name := filepath.Base(path)
 	account.Name = name
-
 	account.Path = path
 
 	account.Transactions = map[int]Transaction{}

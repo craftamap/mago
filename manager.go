@@ -1,4 +1,4 @@
-package money
+package mago
 
 import (
 	"io/ioutil"

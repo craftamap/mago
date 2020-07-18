@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import "github.com/spf13/cobra"
 
@@ -11,6 +11,6 @@ func init() {
 	rootCmd.PersistentFlags().StringP("target", "t", ".", "Target directory on which to operate")
 }
 
-func Execute() error {
-	return rootCmd.Execute()
+func main() {
+	rootCmd.Execute()
 }
