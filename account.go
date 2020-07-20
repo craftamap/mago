@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 )
 
 type Account struct {
@@ -91,21 +91,31 @@ func (a *Account) AddTransaction(transaction *Transaction) error {
 
 func (a *Account) CreateTransaction(amount Amount, description string, category string) (*Transaction, error) {
 	//TODO: Do we really want to generate the ids like this?
-	var maxID int = rand.Intn(1000)
-	for id := range a.Transactions {
-		if id > maxID {
-			maxID = id
+	newId := time.Now().Unix()
+	doBreak := false
+	if len(a.Transactions) > 0 {
+		for {
+			for id := range a.Transactions {
+				if id == int(newId) {
+					newId += 1
+					break
+				}
+				doBreak = true
+			}
+			if doBreak {
+				break
+			}
 		}
 	}
 
-	newID := maxID + 1
-
 	transaction := Transaction{
-		ID:          newID,
-		Amount:      amount,
-		Description: description,
-		Category:    category,
-		Account:     a,
+		ID:               int(newId),
+		Amount:           amount,
+		Description:      description,
+		Category:         category,
+		Account:          a,
+		CreationDate:     time.Now(),
+		ModificationDate: time.Now(),
 	}
 
 	err := a.AddTransaction(&transaction)
